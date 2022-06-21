@@ -4,7 +4,6 @@ import torch.nn as nn
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 import wandb
-from upsample import UpSample
 
 def download_minist_dataset(outpath: str, tf: transforms):
     mnist = datasets.MNIST(outpath, train=True, download=True, transform=tf)

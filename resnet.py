@@ -19,8 +19,7 @@ class ResBlock(nn.Module):
     def forward(self, x):
         out = self.conv(x)
         out = self.bn(out)
-        out1 = out
         out = self.conv2(out)
-        out = self.bn2(out) + out1
+        out = self.bn2(out) + x
         out = torch.relu(out)
         return out

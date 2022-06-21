@@ -1,7 +1,6 @@
 from time import time
 from numpy import pad
 import torch.nn as nn
-import torch
 
 from resnet import ResBlock
 

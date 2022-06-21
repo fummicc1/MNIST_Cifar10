@@ -17,8 +17,8 @@ def train_and_validate(net: nn.Module, train_dataloader: DataLoader, test_datalo
         net.parameters(),
         lr=lr,
         momentum=momentum,
-        weight_decay=0.0001
-    )	
+        weight_decay=0.001
+    )
     scheduler = ExponentialLR(optimizer, gamma=0.9)
 
     param_cnt = 0
