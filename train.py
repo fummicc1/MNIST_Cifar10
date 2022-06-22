@@ -56,15 +56,16 @@ def train_and_validate(net: nn.Module, train_dataloader: DataLoader, test_datalo
         validate(net, train_dataloader, test_dataloader, epoch)
 
 
-def train(net: nn.Module, train_dataloader: DataLoader, epoch_size:int = 25, lr: float = 0.001, momentum: float = 0.5):
+def train(net: nn.Module, train_dataloader: DataLoader, epoch_size:int = 25, lr: float = 0.001, momentum: float = 0.9):
     net = net.to(device)
-    criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(
-        net.parameters(),
-        lr=lr,
-        momentum=momentum,
-        weight_decay=0.0001
-    )
+    criterion = nn.CrossEntropyLoss()    
+    # optimizer = optim.SGD(
+    #     net.parameters(),
+    #     lr=lr,
+    #     momentum=momentum,
+    #     weight_decay=0.0001
+    # )
+    optimizer = optim.Adam(net.parameters(), lr=lr)    
     scheduler = ExponentialLR(optimizer, gamma=0.95)
 
     param_cnt = 0

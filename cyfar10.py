@@ -12,7 +12,7 @@ import wandb
 
 
 def preprocess(x, y):
-	device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
+	device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 	return x.view(-1, 3, 32, 32).to(device), y.to(device)
 
 if __name__ == "__main__":

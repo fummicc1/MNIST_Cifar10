@@ -37,7 +37,7 @@ def download_cyfar10_dataset(outpath: str):
     # 標準化・正規化の計算
     loader = DataLoader(cyfar10, batch_size=100, num_workers=8)
     head, _ = next(iter(loader))
-    mean, std = head.mean(), head.std()
+    mean, std = head.mean(), head.std()    
     tf = transforms.Compose([
         tf,
         transforms.Normalize(mean, std),
@@ -49,8 +49,8 @@ def download_cyfar10_dataset(outpath: str):
 		transform=transforms.ToTensor()
 	)
     test_tf = transforms.Compose([
-        transforms.AutoAugment(),
         transforms.ToTensor(),
+        transforms.Normalize(mean, std),
     ])
     cyfar10 = datasets.CIFAR10(
         outpath, train=True, download=True, transform=tf)
