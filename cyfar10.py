@@ -12,7 +12,7 @@ import wandb
 
 
 def preprocess(x, y):
-	device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+	device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
 	return x.view(-1, 3, 32, 32).to(device), y.to(device)
 
 if __name__ == "__main__":
@@ -20,8 +20,8 @@ if __name__ == "__main__":
 	torch_fix_seed(32)
 	bt_size = 100
 	train_dataset, test_dataset = download_cyfar10_dataset("data/")
-	train_dataloader = DataLoader(train_dataset, batch_size=bt_size, num_workers=2)
-	test_dataloader = DataLoader(test_dataset, batch_size=bt_size, num_workers=2)
+	train_dataloader = DataLoader(train_dataset, batch_size=bt_size, num_workers=8)
+	test_dataloader = DataLoader(test_dataset, batch_size=bt_size, num_workers=8)
 	train_dataloader = WrappedDataLoader(train_dataloader, preprocess)
 	test_dataloader = WrappedDataLoader(test_dataloader, preprocess)
 

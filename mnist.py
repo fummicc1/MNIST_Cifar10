@@ -17,8 +17,8 @@ if __name__ == "__main__":
 		transforms.ToTensor()	
 	])
 	train_dataset, test_dataset = download_minist_dataset("data/", my_transforms)
-	train_dataloader = DataLoader(train_dataset, batch_size=100, num_workers=2)
-	test_dataloader = DataLoader(test_dataset, batch_size=100, num_workers=2)
+	train_dataloader = DataLoader(train_dataset, batch_size=100, num_workers=8)
+	test_dataloader = DataLoader(test_dataset, batch_size=100, num_workers=8)
 
 	net = MnistNet()
 	if exists("trained_mnist_state.pt"):

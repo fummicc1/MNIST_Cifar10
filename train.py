@@ -8,18 +8,18 @@ import torch
 
 from validate import validate
 
-device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
 
-def train_and_validate(net: nn.Module, train_dataloader: DataLoader, test_dataloader: DataLoader, epoch_size:int = 25, lr: float = 0.001, momentum: float = 0.9):
+def train_and_validate(net: nn.Module, train_dataloader: DataLoader, test_dataloader: DataLoader, epoch_size:int = 40, lr: float = 0.001, momentum: float = 0.5):
     net = net.to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(
         net.parameters(),
         lr=lr,
         momentum=momentum,
-        weight_decay=0.001
+        weight_decay=0.00001
     )
-    scheduler = ExponentialLR(optimizer, gamma=0.9)
+    scheduler = ExponentialLR(optimizer, gamma=0.95)
 
     param_cnt = 0
     for param in net.parameters():
@@ -56,7 +56,7 @@ def train_and_validate(net: nn.Module, train_dataloader: DataLoader, test_datalo
         validate(net, train_dataloader, test_dataloader, epoch)
 
 
-def train(net: nn.Module, train_dataloader: DataLoader, epoch_size:int = 25, lr: float = 0.001, momentum: float = 0.9):
+def train(net: nn.Module, train_dataloader: DataLoader, epoch_size:int = 25, lr: float = 0.001, momentum: float = 0.5):
     net = net.to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(
@@ -65,7 +65,7 @@ def train(net: nn.Module, train_dataloader: DataLoader, epoch_size:int = 25, lr:
         momentum=momentum,
         weight_decay=0.0001
     )
-    scheduler = ExponentialLR(optimizer, gamma=0.9)
+    scheduler = ExponentialLR(optimizer, gamma=0.95)
 
     param_cnt = 0
     for param in net.parameters():

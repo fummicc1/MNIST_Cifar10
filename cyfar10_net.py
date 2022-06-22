@@ -18,20 +18,36 @@ class Cyfar10Net(nn.Module):
 			*([ResBlock(64) for i in range(3)])			
 		)
 		self.l3 = nn.Sequential(
-			nn.Conv2d(64, 256, 5, padding=1),
+			nn.Conv2d(64, 128, 3, padding=1),
+			nn.BatchNorm2d(128),
+			nn.ReLU(inplace=True)
+		)
+		self.l4 = nn.Sequential(
+			*([ResBlock(128) for i in range(4)])			
+		)
+		self.l5 = nn.Sequential(
+			nn.Conv2d(128, 256, 5, padding=1),
 			nn.BatchNorm2d(256),
 			nn.ReLU(inplace=True),
 			nn.MaxPool2d((2, 2)),
 		)
-		self.l4 = nn.Sequential(
+		self.l6 = nn.Sequential(
 			*([ResBlock(256) for i in range(6)])
+		)
+		self.l7 = nn.Sequential(
+			nn.Conv2d(256, 512, 3, padding=1),
+			nn.BatchNorm2d(512),
+			nn.ReLU(inplace=True),		
+		)
+		self.l8 = nn.Sequential(
+			*([ResBlock(512) for i in range(4)])
 		)		
-		self.l5 = nn.Sequential(
-			nn.Conv2d(256, 512, 3),
+		self.l9 = nn.Sequential(
+			nn.Conv2d(512, 512, 3),
 			nn.BatchNorm2d(512),			
 			nn.ReLU(inplace=True),		
 		)
-		self.l6 = nn.Sequential(
+		self.l10 = nn.Sequential(
 			nn.AvgPool2d(2, 2)
 		)
 		self.fc1 = nn.Sequential(			
@@ -51,6 +67,10 @@ class Cyfar10Net(nn.Module):
 		x = self.l4(x)
 		x = self.l5(x)
 		x = self.l6(x)
+		x = self.l7(x)
+		x = self.l8(x)
+		x = self.l9(x)
+		x = self.l10(x)
 		x = x.view(-1, 6 * 6 * 512)
 		x = self.fc1(x)
 		x = self.fc2(x)
