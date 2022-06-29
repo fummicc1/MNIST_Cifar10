@@ -11,14 +11,17 @@ from validate import validate
 device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
 
 
-def train_and_validate(net: nn.Module, train_dataloader: DataLoader, test_dataloader: DataLoader, epoch_size: int = 40, lr: float = 0.001, momentum: float = 0.5):
+def train_and_validate(net: nn.Module, train_dataloader: DataLoader, test_dataloader: DataLoader, epoch_size: int = 40, lr: float = 0.001, momentum: float = 0.9):
     net = net.to(device)
+    # net = nn.DataParallel(net)
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(
-        net.parameters(),
-        lr=lr,
-        weight_decay=0.0001
-    )
+    # optimizer = optim.SGD(
+    #     net.parameters(),
+    #     lr=lr,
+    #     momentum=momentum,
+    #     weight_decay=0.0001
+    # )
+    optimizer = optim.Adam(net.parameters(), lr=lr, weight_decay=0.0001)
     scheduler = ExponentialLR(optimizer, gamma=0.95)
 
     param_cnt = 0
@@ -32,6 +35,7 @@ def train_and_validate(net: nn.Module, train_dataloader: DataLoader, test_datalo
     print("model_param_cnt", param_cnt)
 
     for epoch in range(epoch_size):
+        print(torch.cuda.is_available())
         epoch_loss = 0
         duration_list = []
         start = time()
@@ -50,7 +54,7 @@ def train_and_validate(net: nn.Module, train_dataloader: DataLoader, test_datalo
         wandb.log({
             "epoch": epoch,
             "loss": epoch_loss / len(train_dataloader),
-            f"total duration per epoch_{epoch}": sum(duration_list),
+            "total duration": sum(duration_list),
         })
         print(f"epoch {epoch+1}, Inference")
         validate(net, train_dataloader, test_dataloader, epoch)
@@ -65,7 +69,7 @@ def train(net: nn.Module, train_dataloader: DataLoader, epoch_size: int = 25, lr
     #     momentum=momentum,
     #     weight_decay=0.0001
     # )
-    optimizer = optim.Adam(net.parameters(), lr=lr)
+    optimizer = optim.Adam(net.parameters(), lr=lr, weight_decay=0.0001)
     scheduler = ExponentialLR(optimizer, gamma=0.95)
 
     param_cnt = 0

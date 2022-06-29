@@ -15,8 +15,6 @@ def validate(model: nn.Module, train_loader: DataLoader, test_loader: DataLoader
                 _, prediction = torch.max(out, dim=1)
                 total += labels.shape[0]
                 correct += int((prediction == labels).sum())
-                print("prediction", prediction)
-                print("labels", labels)
         if epoch is None:
             print(f"[Accuracy] {name}: {correct/total}")
             wandb.log({
@@ -25,7 +23,8 @@ def validate(model: nn.Module, train_loader: DataLoader, test_loader: DataLoader
         else:
             print(f"[Accuracy for epoch {epoch}] {name}: {correct/total}")
             wandb.log({
-                f"accuracy_{name}, epoch {epoch}": correct / total
+                "epoch": epoch,
+                f"accuracy_{name}": correct / total
             })
     param_cnt = 0
     for param in model.parameters():

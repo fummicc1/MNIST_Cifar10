@@ -1,6 +1,5 @@
 from genericpath import exists
 import torch
-from torchvision import transforms
 from torch.utils.data import DataLoader
 from WrappedDataLoader import WrappedDataLoader
 from cyfar10_net import Cyfar10Net
@@ -11,8 +10,10 @@ from train import train_and_validate
 import wandb
 
 
+device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
+
+
 def preprocess(x, y):
-    device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
     return x.view(-1, 3, 32, 32).to(device), y.to(device)
 
 
@@ -29,11 +30,8 @@ if __name__ == "__main__":
     test_dataloader = WrappedDataLoader(test_dataloader, preprocess)
 
     net = Cyfar10Net()
-    if exists("trained_cyfar10.pt"):
-        net.load_state_dict(torch.load("trained_cyfar10.pt"))
-    else:
-        train_and_validate(net, train_dataloader, test_dataloader, lr=0.003)
-        print("Finished training and inferring")
-        torch.save(net.state_dict(), "trained_cyfar10.pt")
+    train_and_validate(net, train_dataloader, test_dataloader, lr=0.003)
+    print("Finished training and inferring")
+    torch.save(net.state_dict(), "trained_cyfar10.pt")
     wandb.save(f"cyfar10.h5")
     print("Finished validating")
