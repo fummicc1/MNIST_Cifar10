@@ -2,7 +2,7 @@ from time import time
 import torch.nn as nn
 from torch.utils.data import DataLoader
 import torch.optim as optim
-from torch.optim.lr_scheduler import ExponentialLR
+from torch.optim.lr_scheduler import ExponentialLR, CosineAnnealingLR
 import wandb
 import torch
 
@@ -15,14 +15,13 @@ def train_and_validate(net: nn.Module, train_dataloader: DataLoader, test_datalo
     net = net.to(device)
     # net = nn.DataParallel(net)
     criterion = nn.CrossEntropyLoss()
-    # optimizer = optim.SGD(
-    #     net.parameters(),
-    #     lr=lr,
-    #     momentum=momentum,
-    #     weight_decay=0.0001
-    # )
-    optimizer = optim.Adam(net.parameters(), lr=lr, weight_decay=0.0001)
-    scheduler = ExponentialLR(optimizer, gamma=0.95)
+    optimizer = optim.SGD(
+        net.parameters(),
+        lr=lr,
+        momentum=momentum,
+        weight_decay=0.0001,
+    )
+    scheduler = CosineAnnealingLR(optimizer, T_max=20, eta_min=0.001)
 
     param_cnt = 0
     for param in net.parameters():
@@ -35,7 +34,6 @@ def train_and_validate(net: nn.Module, train_dataloader: DataLoader, test_datalo
     print("model_param_cnt", param_cnt)
 
     for epoch in range(epoch_size):
-        print(torch.cuda.is_available())
         epoch_loss = 0
         duration_list = []
         start = time()

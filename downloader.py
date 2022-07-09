@@ -26,9 +26,9 @@ def download_minist_dataset(outpath: str, tf: transforms):
     return (mnist, mnist_test)
 
 
-def download_cyfar10_dataset(outpath: str):
+def download_cyfar10_dataset(outpath: str):    
     tf = transforms.Compose([
-        transforms.AutoAugment(),
+        transforms.RandomHorizontalFlip(),
         transforms.RandomCrop(32),
         transforms.ToTensor(),
     ])
@@ -38,9 +38,10 @@ def download_cyfar10_dataset(outpath: str):
     loader = DataLoader(cyfar10, batch_size=100, num_workers=8)
     head, _ = next(iter(loader))
     mean, std = head.mean(), head.std()
+    print("mean, std", mean, std)
     tf = transforms.Compose([
         tf,
-        transforms.Normalize(mean, std),
+        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
     ])
     cyfar10_test = datasets.CIFAR10(
         outpath,
@@ -50,7 +51,7 @@ def download_cyfar10_dataset(outpath: str):
     )
     test_tf = transforms.Compose([
         transforms.ToTensor(),
-        transforms.Normalize(mean, std),
+        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
     ])
     cyfar10 = datasets.CIFAR10(
         outpath, train=True, download=True, transform=tf)

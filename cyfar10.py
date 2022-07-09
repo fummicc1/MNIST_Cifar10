@@ -30,7 +30,7 @@ if __name__ == "__main__":
     test_dataloader = WrappedDataLoader(test_dataloader, preprocess)
 
     net = Cyfar10Net()
-    train_and_validate(net, train_dataloader, test_dataloader, lr=0.003)
+    train_and_validate(net, train_dataloader, test_dataloader, lr=0.001)
     print("Finished training and inferring")
     torch.save(net.state_dict(), "trained_cyfar10.pt")
     wandb.save(f"cyfar10.h5")

@@ -12,6 +12,7 @@ def validate(model: nn.Module, train_loader: DataLoader, test_loader: DataLoader
         with torch.no_grad():
             for imgs, labels in loader:
                 out = model(imgs)
+                out = nn.LogSoftmax(dim=1)(out)
                 _, prediction = torch.max(out, dim=1)
                 total += labels.shape[0]
                 correct += int((prediction == labels).sum())
