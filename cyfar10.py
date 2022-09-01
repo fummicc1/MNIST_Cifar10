@@ -1,12 +1,13 @@
-from genericpath import exists
 import torch
+import torch.nn as nn
 from torch.utils.data import DataLoader
 from WrappedDataLoader import WrappedDataLoader
-from cyfar10_net import Cyfar10Net
+from cyfar10_net import BasicBlock, Cyfar10Net
 from downloader import download_cyfar10_dataset
 from fix_seed import torch_fix_seed
 
 from train import train_and_validate
+from torchvision.models import resnet18
 import wandb
 
 
@@ -18,14 +19,16 @@ def preprocess(x, y):
 
 
 if __name__ == "__main__":
-    wandb.init(project=f"practice-cyfar10")
+    wandb.init(project=f"practice-cyfar10", name="custom_model")
     torch_fix_seed(32)
-    bt_size = 100
+    bt_size = 500
     train_dataset, test_dataset = download_cyfar10_dataset("data/")
     train_dataloader = DataLoader(
-        train_dataset, batch_size=bt_size, num_workers=8)
+        train_dataset, batch_size=bt_size, num_workers=8, shuffle=True
+    )
     test_dataloader = DataLoader(
-        test_dataset, batch_size=bt_size, num_workers=8)
+        test_dataset, batch_size=bt_size, num_workers=8, shuffle=False
+    )
     train_dataloader = WrappedDataLoader(train_dataloader, preprocess)
     test_dataloader = WrappedDataLoader(test_dataloader, preprocess)
 

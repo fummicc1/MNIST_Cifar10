@@ -26,19 +26,12 @@ def download_minist_dataset(outpath: str, tf: transforms):
     return (mnist, mnist_test)
 
 
-def download_cyfar10_dataset(outpath: str):    
+def download_cyfar10_dataset(outpath: str):                
     tf = transforms.Compose([
         transforms.RandomHorizontalFlip(),
-        transforms.RandomCrop(32),
+        transforms.RandomCrop(32),        
         transforms.ToTensor(),
     ])
-    cyfar10 = datasets.CIFAR10(
-        outpath, train=True, download=True, transform=tf)
-    # 標準化・正規化の計算
-    loader = DataLoader(cyfar10, batch_size=100, num_workers=8)
-    head, _ = next(iter(loader))
-    mean, std = head.mean(), head.std()
-    print("mean, std", mean, std)
     tf = transforms.Compose([
         tf,
         transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
@@ -56,25 +49,7 @@ def download_cyfar10_dataset(outpath: str):
     cyfar10 = datasets.CIFAR10(
         outpath, train=True, download=True, transform=tf)
     cyfar10_test = datasets.CIFAR10(
-        outpath, train=False, download=True, transform=test_tf)
-    imgs = []
-    loader = DataLoader(cyfar10, batch_size=10, num_workers=8)
-    head, _ = next(iter(loader))
-    for img in head:
-        img = wandb.Image(img)
-        imgs.append(img)
-    wandb.log({
-        "train_image_samples": imgs
-    })
-    loader = DataLoader(cyfar10_test, batch_size=10, num_workers=8)
-    head, _ = next(iter(loader))
-    imgs = []
-    for img in head:
-        img = wandb.Image(img)
-        imgs.append(img)
-    wandb.log({
-        "test_image_samples": imgs
-    })
+        outpath, train=False, download=True, transform=test_tf)    
     return (cyfar10, cyfar10_test)
 
 
