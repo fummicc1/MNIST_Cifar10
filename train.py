@@ -11,7 +11,7 @@ from validate import validate
 device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
 
 
-def train_and_validate(net: nn.Module, train_dataloader: DataLoader, test_dataloader: DataLoader, epoch_size: int = 100, lr: float = 0.001, momentum: float = 0.9):
+def train_and_validate(net: nn.Module, train_dataloader: DataLoader, test_dataloader: DataLoader, epoch_size: int = 40, lr: float = 0.001, momentum: float = 0.9):
     net = net.to(device)
     # net = nn.DataParallel(net)
     criterion = nn.CrossEntropyLoss()
@@ -19,9 +19,9 @@ def train_and_validate(net: nn.Module, train_dataloader: DataLoader, test_datalo
         net.parameters(),
         lr=lr,
         momentum=momentum,
-        weight_decay=0.001,
+        weight_decay=0.0001,
     )
-    scheduler = CosineAnnealingLR(optimizer, T_max=20, eta_min=0.001)
+    scheduler = ExponentialLR(optimizer, gamma=0.95)
 
     param_cnt = 0
     for param in net.parameters():
