@@ -32,7 +32,7 @@ if __name__ == "__main__":
     train_dataloader = WrappedDataLoader(train_dataloader, preprocess)
     test_dataloader = WrappedDataLoader(test_dataloader, preprocess)
 
-    net = Cyfar10Net()
+    net = resnet18()
     train_and_validate(net, train_dataloader, test_dataloader, lr=0.001)
     print("Finished training and inferring")
     torch.save(net.state_dict(), "trained_cyfar10.pt")

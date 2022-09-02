@@ -4,6 +4,7 @@ import torch.nn as nn
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 import wandb
+from randomaug import RandAugment
 
 
 def download_minist_dataset(outpath: str, tf: transforms):
@@ -26,10 +27,12 @@ def download_minist_dataset(outpath: str, tf: transforms):
     return (mnist, mnist_test)
 
 
-def download_cyfar10_dataset(outpath: str):                    
+def download_cyfar10_dataset(outpath: str):                        
     tf = transforms.Compose([
-        transforms.RandomHorizontalFlip(),
-        transforms.RandomCrop(32),        
+        RandAugment(2, 14),
+        transforms.RandomCrop(32, padding=4),
+        transforms.Resize(32),
+        transforms.RandomHorizontalFlip(),                
         transforms.ToTensor(),
         transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
     ])
@@ -40,6 +43,7 @@ def download_cyfar10_dataset(outpath: str):
         transform=transforms.ToTensor()
     )
     test_tf = transforms.Compose([
+        transforms.Resize(32),
         transforms.ToTensor(),
         transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
     ])
