@@ -29,19 +29,12 @@ def download_minist_dataset(outpath: str, tf: transforms):
 
 def download_cyfar10_dataset(outpath: str):                        
     tf = transforms.Compose([
-        RandAugment(2, 14),
-        transforms.RandomCrop(32, padding=4),
-        transforms.Resize(32),
-        transforms.RandomHorizontalFlip(),                
+        transforms.RandomCrop(32, padding=4, padding_mode="reflect"),
+        transforms.RandomHorizontalFlip(),     
+        transforms.Resize(32),           
         transforms.ToTensor(),
         transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
     ])
-    cyfar10_test = datasets.CIFAR10(
-        outpath,
-        train=False,
-        download=True,
-        transform=transforms.ToTensor()
-    )
     test_tf = transforms.Compose([
         transforms.Resize(32),
         transforms.ToTensor(),

@@ -46,10 +46,9 @@ class Cyfar10Net(nn.Module):
                 nn.init.constant_(module.bias, 0)
 
     def _make_layer(self, block, planes, stride):
-        layers = []
-        layers.append(block(self.in_planes, planes, stride))
+        layer = block(self.in_planes, planes, stride)
         self.in_planes = planes * block.expansion
-        return nn.Sequential(*layers)
+        return nn.Sequential(layer)
 
     def forward(self, x: Tensor):
         x = self.l1(x)
@@ -108,6 +107,6 @@ class BasicBlock(nn.Module):
     def forward(self, x):
         out = F.relu(self.bn1(self.conv1(x)))
         out = self.bn2(self.conv2(out))        
-        out = out + self.shortcut(x)   
+        out += self.shortcut(x)   
         out = F.relu(out)     
         return out
